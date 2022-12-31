@@ -4,8 +4,8 @@
 #include <memory>
 #include <type_traits>
 
-#include "coro/sched/promise.hpp"
 #include "exception.hpp"
+#include "sched/promise.hpp"
 
 namespace coro {
 
@@ -20,7 +20,7 @@ class Promise {
   }
 
   T await() const;
-  T await(std::error_code* error) const { promise_->await(error); }
+  T await(std::error_code* error) const { return promise_->await(error); }
 
  private:
   std::shared_ptr<sched::Promise<T>> promise_;

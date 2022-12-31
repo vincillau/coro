@@ -10,16 +10,11 @@
 namespace coro {
 namespace sched {
 
-struct TransData {
-  Coro* prev;
-  const Coro* next;
-};
-
 void Coro::fctxFunc(transfer_t trans) {
-  auto trans_data = static_cast<TransData*>(trans.data);
-  trans_data->prev->fctx_ = trans.fctx;
+  auto prev = static_cast<Coro*>(trans.data);
+  prev->fctx_ = trans.fctx;
   try {
-    trans_data->next->func_();
+    sched::Sched::current()->func_();
     Sched::exit();
   } catch (...) {
     std::cerr << "the coroutine function throws an uncaught exception"
@@ -41,10 +36,9 @@ Coro::~Coro() {
 }
 
 void Coro::resume(Coro* prev) const {
-  TransData trans_data{.prev = prev, .next = this};
-  transfer_t trans = jump_fcontext(fctx_, &trans_data);
-  trans_data = *static_cast<TransData*>(trans.data);
-  trans_data.prev->fctx_ = trans.fctx;
+  transfer_t trans = jump_fcontext(fctx_, prev);
+  prev = static_cast<Coro*>(trans.data);
+  prev->fctx_ = trans.fctx;
   Sched::cleanDead();
 }
 

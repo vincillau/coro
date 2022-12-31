@@ -15,6 +15,8 @@ class Sched {
   Sched();
 
   static Coro::Handle current();
+  static boost::asio::io_context& io_context();
+
   static void add(Coro::Handle coro);
 
   static void yield();

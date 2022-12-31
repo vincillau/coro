@@ -26,6 +26,7 @@ class Promise {
 
 template <typename T>
 inline void Promise<T>::resolve(T value) {
+  settled_ = true;
   value_ = std::move(value);
   if (onSettle_) {
     onSettle_();
@@ -34,6 +35,7 @@ inline void Promise<T>::resolve(T value) {
 
 template <typename T>
 inline void Promise<T>::reject(std::error_code error) {
+  settled_ = true;
   error_ = std::move(error);
   if (onSettle_) {
     onSettle_();

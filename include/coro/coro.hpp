@@ -9,12 +9,23 @@
 
 namespace coro {
 
+template <typename T, typename Func>
+void runFunc(const Func& func, const Promise<T>& promise) {
+  promise.resolve(func());
+}
+
+template <typename Func>
+void runFunc(const Func& func, const Promise<void>& promise) {
+  func();
+  promise.resolve();
+}
+
 template <typename Func>
 Promise<typename std::result_of<Func()>::type> spawn(Func func) {
   Promise<typename std::result_of<Func()>::type> promise;
   auto coro_func = [func, promise]() {
     try {
-      promise.resolve(func());
+      runFunc(func, promise);
     } catch (const Exception& e) {
       promise.reject(e.error());
     }

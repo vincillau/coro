@@ -14,60 +14,59 @@ Sched::Sched()
 
 Coro::Handle Sched::current() { return threadSched->current_; }
 
+boost::asio::io_context& Sched::io_context() {
+  return threadSched->io_context_;
+}
+
 void Sched::add(Coro::Handle coro) { threadSched->ready_coros_.push(coro); }
 
 void Sched::yield() {
   if (threadSched->ready_coros_.empty()) {
     return;
   }
-  auto prev = threadSched->current_;
-  threadSched->ready_coros_.push(prev);
-  auto next = threadSched->ready_coros_.front();
+  auto prev = threadSched->current_.get();
+  threadSched->ready_coros_.push(threadSched->current_);
+  threadSched->current_ = threadSched->ready_coros_.front();
   threadSched->ready_coros_.pop();
-  threadSched->current_ = next;
-  next->resume(prev.get());
+  threadSched->current_->resume(prev);
 }
 
 void Sched::block() {
-  auto prev = threadSched->current_;
-  Coro::Handle next;
+  auto prev = threadSched->current_.get();
   if (threadSched->ready_coros_.empty()) {
-    next = threadSched->idle_;
+    threadSched->current_ = threadSched->idle_;
   } else {
-    next = threadSched->ready_coros_.front();
+    threadSched->current_ = threadSched->ready_coros_.front();
     threadSched->ready_coros_.pop();
   }
-  threadSched->current_ = next;
-  next->resume(prev.get());
+  threadSched->current_->resume(prev);
 }
 
 void Sched::exit() {
-  auto prev = threadSched->current_;
-  Coro::Handle next;
+  threadSched->dead_ = threadSched->current_;
+  auto prev = threadSched->current_.get();
   if (threadSched->ready_coros_.empty()) {
-    next = threadSched->idle_;
+    threadSched->current_ = threadSched->idle_;
   } else {
-    next = threadSched->ready_coros_.front();
+    threadSched->current_ = threadSched->ready_coros_.front();
     threadSched->ready_coros_.pop();
   }
-  threadSched->dead_ = prev;
-  threadSched->current_ = next;
-  next->resume(prev.get());
+  threadSched->current_->resume(prev);
 }
 
 void Sched::cleanDead() { threadSched->dead_.reset(); }
 
 void Sched::idleFunc() {
+  auto work_guard = boost::asio::make_work_guard(threadSched->io_context());
   while (true) {
     threadSched->io_context_.run_one();
     if (threadSched->ready_coros_.empty()) {
       continue;
     }
-    auto prev = threadSched->idle_;
-    auto next = threadSched->ready_coros_.front();
+    auto prev = threadSched->idle_.get();
+    threadSched->current_ = threadSched->ready_coros_.front();
     threadSched->ready_coros_.pop();
-    threadSched->current_ = next;
-    next->resume(prev.get());
+    threadSched->current_->resume(prev);
   }
 }
 
