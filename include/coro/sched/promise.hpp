@@ -53,6 +53,9 @@ inline T Promise<T>::await(std::error_code* error) {
   auto coro = Sched::current();
   onSettle_ = [coro]() { Sched::add(coro); };
   Sched::block();
+  if (error) {
+    *error = std::move(error_);
+  }
   return std::move(value_);
 }
 
@@ -93,8 +96,11 @@ inline void Promise<void>::await(std::error_code* error) {
     return;
   }
   auto coro = Sched::current();
-  onSettle_ = [coro]() { Sched::add(coro); };
+  onSettle_ = [coro, this]() { Sched::add(coro); };
   Sched::block();
+  if (error) {
+    *error = std::move(error_);
+  }
 }
 
 }  // namespace sched

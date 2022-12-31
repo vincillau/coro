@@ -5,7 +5,7 @@ namespace tcp {
 
 Promise<size_t> Conn::read(char* buf, size_t size) {
   Promise<size_t> promise;
-  socket_.async_receive(boost::asio::buffer(buf, size),
+  socket_.async_receive(boost::asio::mutable_buffer(buf, size),
                         [promise](const std::error_code& error, size_t n) {
                           if (error) {
                             promise.reject(error);

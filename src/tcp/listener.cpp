@@ -20,15 +20,46 @@ Promise<std::shared_ptr<Conn>> Listener::accept() {
   return promise;
 }
 
-Promise<std::shared_ptr<Listener>> listen(const std::string& host,
-                                          uint16_t port) {
-  Promise<std::shared_ptr<Listener>> promise;
+std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
+                                 std::error_code* error) {
   boost::asio::ip::tcp ::endpoint endpoint(
       boost::asio::ip::address::from_string(host), port);
-  auto listener =
-      std::make_shared<Listener>(sched::Sched::io_context(), endpoint);
-  promise.resolve(listener);
-  return promise;
+  boost::asio::ip::tcp::acceptor acceptor(sched::Sched::io_context());
+
+  boost::system::error_code err;
+  acceptor.open(endpoint.protocol(), err);
+  if (err) {
+    if (error) {
+      *error = err;
+    }
+    return nullptr;
+  }
+  acceptor.bind(endpoint);
+  if (err) {
+    if (error) {
+      *error = err;
+    }
+    return nullptr;
+  }
+  acceptor.listen(boost::asio::socket_base::max_listen_connections, err);
+  if (err) {
+    if (error) {
+      *error = err;
+    }
+    return nullptr;
+  }
+
+  auto listener = std::make_shared<Listener>(std::move(acceptor));
+  return listener;
+}
+
+std::shared_ptr<Listener> listen(const std::string& host, uint16_t port) {
+  std::error_code error;
+  auto listener = listen(host, port, &error);
+  if (error) {
+    throw Exception(error);
+  }
+  return listener;
 }
 
 }  // namespace tcp
