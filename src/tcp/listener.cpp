@@ -9,14 +9,13 @@ namespace tcp {
 Promise<std::shared_ptr<Conn>> Listener::accept() {
   Promise<std::shared_ptr<Conn>> promise;
   auto conn = std::make_shared<Conn>(sched::Sched::io_context());
-  acceptor_.async_accept(conn->socket_,
-                         [conn, promise](const std::error_code& error) {
-                           if (error) {
-                             promise.reject(error);
-                           } else {
-                             promise.resolve(conn);
-                           }
-                         });
+  acceptor_.async_accept(conn->socket_, [conn, promise](std::error_code error) {
+    if (error) {
+      promise.reject(std::move(error));
+    } else {
+      promise.resolve(conn);
+    }
+  });
   return promise;
 }
 

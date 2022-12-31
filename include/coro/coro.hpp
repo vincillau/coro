@@ -5,5 +5,6 @@
 #include "exception.hpp"
 #include "promise.hpp"
 #include "tcp.hpp"
+#include "timer.hpp"
 
 #endif  // CORO_INCLUDE_CORO_CORO_HPP_
