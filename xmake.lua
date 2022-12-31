@@ -4,7 +4,7 @@ set_xmakever("2.7.4")
 set_languages("c++11")
 
 add_rules("mode.debug", "mode.release")
-add_requires("boost >= 1.80")
+add_requires("boost >= 1.80", {configs = {context = true}})
 
 target("coro")
     set_kind("static")
