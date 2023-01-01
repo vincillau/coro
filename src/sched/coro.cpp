@@ -14,7 +14,11 @@ void Coro::fctxFunc(transfer_t trans) {
   auto prev = static_cast<Coro*>(trans.data);
   prev->fctx_ = trans.fctx;
   try {
-    sched::Sched::current()->func_();
+    {
+      auto current = sched::Sched::current();
+      current->func_();
+      current->func_ = {};
+    }
     Sched::exit();
   } catch (...) {
     std::cerr << "the coroutine function throws an uncaught exception"
