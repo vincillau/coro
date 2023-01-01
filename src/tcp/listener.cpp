@@ -24,8 +24,8 @@ std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
   boost::asio::ip::tcp ::endpoint endpoint(
       boost::asio::ip::address::from_string(host), port);
   boost::asio::ip::tcp::acceptor acceptor(sched::Sched::io_context());
-
   boost::system::error_code err;
+
   acceptor.open(endpoint.protocol(), err);
   if (err) {
     if (error) {
@@ -33,13 +33,24 @@ std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
     }
     return nullptr;
   }
-  acceptor.bind(endpoint);
+
+  boost::asio::socket_base::reuse_address option(true);
+  acceptor.set_option(option, err);
   if (err) {
     if (error) {
       *error = err;
     }
     return nullptr;
   }
+
+  acceptor.bind(endpoint, err);
+  if (err) {
+    if (error) {
+      *error = err;
+    }
+    return nullptr;
+  }
+
   acceptor.listen(boost::asio::socket_base::max_listen_connections, err);
   if (err) {
     if (error) {
