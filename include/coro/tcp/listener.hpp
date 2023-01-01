@@ -12,25 +12,25 @@
 namespace coro {
 namespace tcp {
 
-class Listener {
+class Acceptor {
  public:
-  Listener(boost::asio::ip::tcp::acceptor acceptor)
+  Acceptor(boost::asio::ip::tcp::acceptor acceptor)
       : acceptor_(std::move(acceptor)) {}
 
-  Promise<std::shared_ptr<Conn>> accept();
+  Promise<Conn> accept();
 
  private:
   boost::asio::ip::tcp::acceptor acceptor_;
 };
 
-std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
-                                 std::error_code* error);
-std::shared_ptr<Listener> listen(const std::string& host, uint16_t port);
-inline static std::shared_ptr<Listener> listen(uint16_t port,
-                                               std::error_code* error) {
+using Listener = std::shared_ptr<Acceptor>;
+
+Listener listen(const std::string& host, uint16_t port, std::error_code* error);
+Listener listen(const std::string& host, uint16_t port);
+inline static Listener listen(uint16_t port, std::error_code* error) {
   return listen("127.0.0.1", port, error);
 }
-inline static std::shared_ptr<Listener> listen(uint16_t port) {
+inline static Listener listen(uint16_t port) {
   return listen("127.0.0.1", port);
 }
 

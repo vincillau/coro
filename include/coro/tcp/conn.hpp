@@ -8,18 +8,20 @@
 namespace coro {
 namespace tcp {
 
-class Conn {
+class Socket {
  public:
-  Conn(boost::asio::io_context& io_context) : socket_(io_context) {}
+  Socket(boost::asio::io_context& io_context) : socket_(io_context) {}
 
   Promise<size_t> read(char* buf, size_t size);
   Promise<size_t> write(const char* buf, size_t size);
 
  private:
-  friend class Listener;
+  friend class Acceptor;
 
   boost::asio::ip::tcp::socket socket_;
 };
+
+using Conn = std::shared_ptr<Socket>;
 
 }  // namespace tcp
 }  // namespace coro

@@ -6,9 +6,9 @@
 namespace coro {
 namespace tcp {
 
-Promise<std::shared_ptr<Conn>> Listener::accept() {
-  Promise<std::shared_ptr<Conn>> promise;
-  auto conn = std::make_shared<Conn>(sched::Sched::io_context());
+Promise<Conn> Acceptor::accept() {
+  Promise<Conn> promise;
+  auto conn = std::make_shared<Socket>(sched::Sched::io_context());
   acceptor_.async_accept(conn->socket_, [conn, promise](std::error_code error) {
     if (error) {
       promise.reject(std::move(error));
@@ -19,8 +19,8 @@ Promise<std::shared_ptr<Conn>> Listener::accept() {
   return promise;
 }
 
-std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
-                                 std::error_code* error) {
+Listener listen(const std::string& host, uint16_t port,
+                std::error_code* error) {
   boost::asio::ip::tcp ::endpoint endpoint(
       boost::asio::ip::address::from_string(host), port);
   boost::asio::ip::tcp::acceptor acceptor(sched::Sched::io_context());
@@ -59,11 +59,11 @@ std::shared_ptr<Listener> listen(const std::string& host, uint16_t port,
     return nullptr;
   }
 
-  auto listener = std::make_shared<Listener>(std::move(acceptor));
+  auto listener = std::make_shared<Acceptor>(std::move(acceptor));
   return listener;
 }
 
-std::shared_ptr<Listener> listen(const std::string& host, uint16_t port) {
+Listener listen(const std::string& host, uint16_t port) {
   std::error_code error;
   auto listener = listen(host, port, &error);
   if (error) {

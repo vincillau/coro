@@ -3,7 +3,7 @@
 namespace coro {
 namespace tcp {
 
-Promise<size_t> Conn::read(char* buf, size_t size) {
+Promise<size_t> Socket::read(char* buf, size_t size) {
   Promise<size_t> promise;
   socket_.async_receive(boost::asio::mutable_buffer(buf, size),
                         [promise](std::error_code error, size_t n) {
@@ -16,7 +16,7 @@ Promise<size_t> Conn::read(char* buf, size_t size) {
   return promise;
 }
 
-Promise<size_t> Conn::write(const char* buf, size_t size) {
+Promise<size_t> Socket::write(const char* buf, size_t size) {
   Promise<size_t> promise;
   socket_.async_send(boost::asio::const_buffer(buf, size),
                      [promise](std::error_code error, size_t n) {
