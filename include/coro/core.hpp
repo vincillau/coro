@@ -19,7 +19,7 @@ void coroFuncWrapper(const Func& func, const Promise<Ret>& promise) {
 }
 
 template <typename Func>
-void runFunc(const Func& func, const Promise<void>& promise) {
+void coroFuncWrapper(const Func& func, const Promise<void>& promise) {
   try {
     func();
     promise.resolve();
