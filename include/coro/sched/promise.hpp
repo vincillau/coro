@@ -54,11 +54,17 @@ class Promise {
   void reject(std::error_code error);
 
   /**
+   * @brief 将 Promise 设置为已拒绝，并指定执行结果和错误码。
+   * @param value 异步函数执行结果。
+   * @param error 错误码。
+   */
+  void reject(T value, std::error_code error);
+
+  /**
    * @brief 如果 Promise 未敲定，则阻塞当前协程直至 Promise
    * 敲定，返回异步函数执行结果。Promise 只能调用 await 一次。
    * @param error Promise 的错误码。
-   * @return T Promise 的执行结果，如果 Promise
-   * 被设置为已拒绝，返回值将没有意义。
+   * @return T Promise 的执行结果。
    */
   T await(std::error_code& error);
 
@@ -70,9 +76,9 @@ class Promise {
 
   /**
    * @brief Promise 被拒绝时调用指定回调。
-   * @param callback 回调函数，error 为错误码。
+   * @param callback 回调函数，value 为异步函数返回结果，error 为错误码。
    */
-  void except(std::function<void(std::error_code error)> callback);
+  void except(std::function<void(T value, std::error_code error)> callback);
 
   /**
    * @brief Promise 被敲定时调用指定回调。
@@ -140,6 +146,17 @@ inline void Promise<T>::reject(std::error_code error) {
 }
 
 template <typename T>
+inline void Promise<T>::reject(T value, std::error_code error) {
+  assert(!settled());
+  settled_ = true;
+  value_ = std::move(value);
+  error_ = std::move(error);
+  for (const std::function<void()>& cb : on_settle_) {
+    cb();
+  }
+}
+
+template <typename T>
 inline T Promise<T>::await(std::error_code& error) {
   if (settled()) {
     error = std::move(error_);
@@ -163,10 +180,10 @@ inline void Promise<T>::then(std::function<void(T value)> callback) {
 
 template <typename T>
 inline void Promise<T>::except(
-    std::function<void(std::error_code error)> callback) {
+    std::function<void(T value, std::error_code error)> callback) {
   appendOnSettle([this, callback]() {
     if (err()) {
-      callback(std::move(error_));
+      callback(std::move(value_), std::move(error_));
     }
   });
 }

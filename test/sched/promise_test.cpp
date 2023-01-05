@@ -73,7 +73,7 @@ TEST(PromiseTest, Then) {
   schedule(coro);
   int val = 0;
   promise->then([&val](int value) { val = value; });
-  promise->except([](std::error_code error) { FAIL(); });
+  promise->except([](int value, std::error_code error) { FAIL(); });
   yield();
   EXPECT_EQ(val, 10);
 }
@@ -90,7 +90,7 @@ TEST(PromiseTest, Except) {
   schedule(coro);
   std::error_code err;
   promise->then([](int value) { FAIL(); });
-  promise->except([&err](std::error_code error) { err = error; });
+  promise->except([&err](int value, std::error_code error) { err = error; });
   yield();
   std::error_code want(static_cast<int>(std::errc::invalid_argument),
                        std::system_category());

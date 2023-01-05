@@ -45,6 +45,17 @@ class Promise {
   }
 
   /**
+   * @brief 将 Promise 设置为已拒绝，并指定错误码。
+   * 调用此函数前 Promise 必须处于待定状态。
+   * @param value 异步函数执行结果。
+   * @param error 错误码。
+   */
+  void reject(T value, std::error_code error) const {
+    assert(error);
+    promise_->reject(std::move(value), std::move(error));
+  }
+
+  /**
    * @brief 如果 Promise 未敲定，则阻塞当前协程直至 Promise
    * 敲定，返回异步函数执行结果。
    * 如果 Promise 被标记为已拒绝，则会抛出 coro::Exception。
@@ -58,8 +69,7 @@ class Promise {
    * @brief 如果 Promise 未敲定，则阻塞当前协程直至 Promise
    * 敲定，返回异步函数执行结果。Promise 只能调用 await 一次。
    * @param error Promise 的错误码，为 nullptr 则忽略错误。
-   * @return T Promise 的执行结果，如果 Promise
-   * 被设置为已拒绝，返回值将没有意义。
+   * @return T Promise 的执行结果。
    */
   T await(std::error_code* error) const;
 
@@ -71,9 +81,10 @@ class Promise {
 
   /**
    * @brief Promise 被拒绝时调用指定回调。
-   * @param callback 回调函数，error 为错误码。
+   * @param callback 回调函数，value 为异步函数执行结果，error 为错误码。
    */
-  Promise<T>& except(std::function<void(std::error_code error)> callback);
+  Promise<T>& except(
+      std::function<void(T value, std::error_code error)> callback);
 
   /**
    * @brief Promise 被敲定时调用指定回调。
@@ -134,7 +145,7 @@ inline Promise<T>& Promise<T>::then(std::function<void(T)> callback) {
 
 template <typename T>
 inline Promise<T>& Promise<T>::except(
-    std::function<void(std::error_code)> callback) {
+    std::function<void(T value, std::error_code)> callback) {
   promise_->except(std::move(callback));
   return *this;
 }
@@ -209,7 +220,7 @@ inline Promise<void>& Promise<void>::then(std::function<void()> callback) {
 }
 
 inline Promise<void>& Promise<void>::except(
-    std::function<void(std::error_code)> callback) {
+    std::function<void(std::error_code error)> callback) {
   promise_->except(std::move(callback));
   return *this;
 }
