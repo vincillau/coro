@@ -15,7 +15,8 @@ class SteadyTimer {
 
   Promise<void> expiresAt(
       std::chrono::time_point<std::chrono::steady_clock> expiry_time);
-  Promise<void> expiresAfter(std::chrono::duration<int64_t> expiry_time);
+  Promise<void> expiresAfter(
+      std::chrono::duration<int64_t, std::nano> expiry_time);
 
  private:
   boost::asio::steady_timer steady_timer_;

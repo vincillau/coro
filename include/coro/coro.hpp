@@ -4,6 +4,7 @@
 #include "core.hpp"
 #include "exception.hpp"
 #include "promise.hpp"
+#include "sleep.hpp"
 #include "tcp.hpp"
 #include "timer.hpp"
 

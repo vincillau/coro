@@ -25,7 +25,7 @@ Promise<void> SteadyTimer::expiresAt(
 }
 
 Promise<void> SteadyTimer::expiresAfter(
-    std::chrono::duration<int64_t> expiry_time) {
+    std::chrono::duration<int64_t, std::nano> expiry_time) {
   Promise<void> promise;
   steady_timer_.expires_after(expiry_time);
   steady_timer_.async_wait([promise](std::error_code error) {
