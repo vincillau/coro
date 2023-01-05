@@ -1,74 +1,28 @@
 #include "coro/sched/sched.hpp"
 
+#include "coro/sched/scheduler.hpp"
+
 namespace coro {
 namespace sched {
 
-static thread_local std::unique_ptr<Sched> threadSched =
-    std::unique_ptr<Sched>(new Sched());
+static thread_local auto scheduler =
+    std::unique_ptr<Scheduler>(new Scheduler());
 
-static constexpr size_t kIdleCoroStackSize = 1024 * 64;
+boost::asio::io_context& io_context() { return scheduler->io_context(); }
 
-Sched::Sched()
-    : current_(std::make_shared<Coro>()),
-      idle_(std::make_shared<Coro>(idleFunc, kIdleCoroStackSize)) {}
+std::shared_ptr<Coro> current() { return scheduler->current(); }
 
-Coro::Handle Sched::current() { return threadSched->current_; }
+void schedule(std::shared_ptr<Coro> coro) { scheduler->schedule(coro); }
 
-boost::asio::io_context& Sched::io_context() {
-  return threadSched->io_context_;
-}
+void yield() { scheduler->yield(); }
 
-void Sched::add(Coro::Handle coro) { threadSched->ready_coros_.push(coro); }
+void block() { scheduler->block(); }
 
-void Sched::yield() {
-  if (threadSched->ready_coros_.empty()) {
-    return;
-  }
-  auto prev = threadSched->current_.get();
-  threadSched->ready_coros_.push(threadSched->current_);
-  threadSched->current_ = threadSched->ready_coros_.front();
-  threadSched->ready_coros_.pop();
-  threadSched->current_->resume(prev);
-}
+void wakeUp(std::shared_ptr<Coro> coro) { scheduler->wakeUp(coro); }
 
-void Sched::block() {
-  auto prev = threadSched->current_.get();
-  if (threadSched->ready_coros_.empty()) {
-    threadSched->current_ = threadSched->idle_;
-  } else {
-    threadSched->current_ = threadSched->ready_coros_.front();
-    threadSched->ready_coros_.pop();
-  }
-  threadSched->current_->resume(prev);
-}
+void exit() { scheduler->exit(); }
 
-void Sched::exit() {
-  threadSched->dead_ = threadSched->current_;
-  auto prev = threadSched->current_.get();
-  if (threadSched->ready_coros_.empty()) {
-    threadSched->current_ = threadSched->idle_;
-  } else {
-    threadSched->current_ = threadSched->ready_coros_.front();
-    threadSched->ready_coros_.pop();
-  }
-  threadSched->current_->resume(prev);
-}
-
-void Sched::cleanDead() { threadSched->dead_.reset(); }
-
-void Sched::idleFunc() {
-  auto work_guard = boost::asio::make_work_guard(threadSched->io_context());
-  while (true) {
-    threadSched->io_context_.run_one();
-    if (threadSched->ready_coros_.empty()) {
-      continue;
-    }
-    auto prev = threadSched->idle_.get();
-    threadSched->current_ = threadSched->ready_coros_.front();
-    threadSched->ready_coros_.pop();
-    threadSched->current_->resume(prev);
-  }
-}
+void freeDead() { scheduler->freeDead(); }
 
 }  // namespace sched
 }  // namespace coro
