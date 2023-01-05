@@ -24,7 +24,7 @@ template <typename T>
 class Promise {
  public:
   /**
-   * @brief 构造一个 Promise 对象，该 Promise 对象处于未决状态。
+   * @brief 构造一个 Promise 对象，该 Promise 对象处于待定状态。
    */
   Promise() = default;
 
@@ -40,15 +40,15 @@ class Promise {
   ~Promise();
 
   /**
-   * @brief 将 Promise 设置为已解决，并将 value 设置为异步函数的执行结果。
-   * 调用此函数前 Promise 必须处于未决状态。
+   * @brief 将 Promise 设置为已兑现，并将 value 设置为异步函数的执行结果。
+   * 调用此函数前 Promise 必须处于待定状态。
    * @param value 异步函数的执行结果。
    */
   void resolve(T value);
 
   /**
    * @brief 将 Promise 设置为已拒绝，并指定错误码。
-   * 调用此函数前 Promise 必须处于未决状态。
+   * 调用此函数前 Promise 必须处于待定状态。
    * @param error 错误码。
    */
   void reject(std::error_code error);
@@ -63,7 +63,7 @@ class Promise {
   T await(std::error_code& error);
 
   /**
-   * @brief Promise 被解决时调用指定回调。
+   * @brief Promise 被兑现时调用指定回调。
    * @param callback 回调函数，value 为异步函数执行结果。
    */
   void then(std::function<void(T value)> callback);
@@ -91,7 +91,7 @@ class Promise {
    * @brief 判断 Promise 是否处于已拒绝状态，只有 Promise
    * 已敲定，返回值才有意义。
    * @return true 已拒绝。
-   * @return false 未决或已解决。
+   * @return false 待定或已兑现。
    */
   bool err() const { return error_.value() != 0; }
 
