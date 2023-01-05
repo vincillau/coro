@@ -21,6 +21,10 @@ class Promise {
   T await() const;
   T await(std::error_code* error) const { return promise_->await(error); }
 
+  Promise<T>& then(std::function<void()> callback);
+  Promise<T>& except(std::function<void(const std::error_code&)> callback);
+  Promise<T>& finally(std::function<void()> callback);
+
   std::shared_ptr<sched::Promise<T>> shared() const { return promise_; }
   std::weak_ptr<sched::Promise<T>> weak() const {
     return std::weak_ptr<sched::Promise<T>>(promise_);
@@ -40,6 +44,46 @@ inline T Promise<T>::await() const {
   return std::move(result);
 }
 
+template <typename T>
+Promise<T>& Promise<T>::then(std::function<void()> callback) {
+  auto weak_promise = weak();
+  shared()->pushOnSettle([weak_promise, callback]() {
+    auto shared = weak_promise.lock();
+    if (!shared) {
+      return;
+    }
+    if (!shared->error()) {
+      callback();
+    }
+  });
+  return *this;
+}
+
+template <typename T>
+Promise<T>& Promise<T>::except(
+    std::function<void(const std::error_code&)> callback) {
+  auto weak_promise = weak();
+  shared()->pushOnSettle([weak_promise, callback]() {
+    auto shared = weak_promise.lock();
+    if (!shared) {
+      std::error_code error(static_cast<int>(std::errc::operation_canceled),
+                            std::system_category());
+      callback(std::move(error));
+      return;
+    }
+    if (shared->error()) {
+      callback(shared->error());
+    }
+  });
+  return *this;
+}
+
+template <typename T>
+Promise<T>& Promise<T>::finally(std::function<void()> callback) {
+  shared()->pushOnSettle(std::move(callback));
+  return *this;
+}
+
 template <>
 class Promise<void> {
  public:
@@ -52,6 +96,10 @@ class Promise<void> {
 
   void await() const;
   void await(std::error_code* error) const { promise_->await(error); }
+
+  Promise<void>& then(std::function<void()> callback);
+  Promise<void>& except(std::function<void(const std::error_code&)> callback);
+  Promise<void>& finally(std::function<void()> callback);
 
   std::shared_ptr<sched::Promise<void>> shared() const { return promise_; }
   std::weak_ptr<sched::Promise<void>> weak() const {
@@ -68,6 +116,43 @@ inline void Promise<void>::await() const {
   if (error) {
     throw Exception(std::move(error));
   }
+}
+
+inline Promise<void>& Promise<void>::then(std::function<void()> callback) {
+  auto weak_promise = weak();
+  shared()->pushOnSettle([weak_promise, callback]() {
+    auto shared = weak_promise.lock();
+    if (!shared) {
+      return;
+    }
+    if (!shared->error()) {
+      callback();
+    }
+  });
+  return *this;
+}
+
+inline Promise<void>& Promise<void>::except(
+    std::function<void(const std::error_code&)> callback) {
+  auto weak_promise = weak();
+  shared()->pushOnSettle([weak_promise, callback]() {
+    auto shared = weak_promise.lock();
+    if (!shared) {
+      std::error_code error(static_cast<int>(std::errc::operation_canceled),
+                            std::system_category());
+      callback(std::move(error));
+      return;
+    }
+    if (shared->error()) {
+      callback(shared->error());
+    }
+  });
+  return *this;
+}
+
+inline Promise<void>& Promise<void>::finally(std::function<void()> callback) {
+  shared()->pushOnSettle(std::move(callback));
+  return *this;
 }
 
 template <typename... Promises>
@@ -135,4 +220,4 @@ Promise<size_t> race(Promises... promises);
 
 }  // namespace coro
 
-#endif  // CORO_INCLUDE_CORO_PROMISE_HPP_
+#endif /* CORO_INCLUDE_CORO_PROMISE_HPP_ */
