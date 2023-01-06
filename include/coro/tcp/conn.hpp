@@ -32,6 +32,8 @@ class Socket : public Stream {
    */
   Promise<size_t> write(const char* buf, size_t len) override;
 
+  void close() override { socket_.close(); }
+
  private:
   friend class Acceptor;
 

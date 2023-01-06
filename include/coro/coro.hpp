@@ -2,6 +2,7 @@
 #define CORO_INCLUDE_CORO_CORO_HPP_
 
 #include "exception.hpp"
+#include "http.hpp"
 #include "promise.hpp"
 #include "sched.hpp"
 #include "sleep.hpp"

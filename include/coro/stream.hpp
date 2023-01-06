@@ -46,6 +46,11 @@ class Stream {
    */
   virtual Promise<size_t> write(const char* buf, size_t len) = 0;
 
+  /**
+   * @brief 关闭流。
+   */
+  virtual void close() = 0;
+
  protected:
   /**
    * @brief 从流缓冲区中读取至多 len 的字节。
