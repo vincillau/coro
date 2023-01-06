@@ -36,11 +36,15 @@ class Socket : public Stream {
 
  private:
   friend class Acceptor;
+  friend Promise<std::shared_ptr<Socket>> connect(const std::string& host,
+                                                  uint16_t port);
 
   boost::asio::ip::tcp::socket socket_;
 };
 
 using Conn = std::shared_ptr<Socket>;
+
+Promise<Conn> connect(const std::string& host, uint16_t port);
 
 }  // namespace tcp
 }  // namespace coro

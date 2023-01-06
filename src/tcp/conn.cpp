@@ -1,5 +1,9 @@
 #include "coro/tcp/conn.hpp"
 
+#include <boost/asio.hpp>
+
+#include "coro/sched/sched.hpp"
+
 namespace coro {
 namespace tcp {
 
@@ -37,6 +41,21 @@ Promise<size_t> Socket::write(const char* buf, size_t len) {
                          promise.resolve(n);
                        }
                      });
+  return promise;
+}
+
+Promise<Conn> connect(const std::string& host, uint16_t port) {
+  Promise<Conn> promise;
+  auto conn = std::make_shared<Socket>(sched::io_context());
+  boost::asio::ip::tcp ::endpoint endpoint(
+      boost::asio::ip::address::from_string(host), port);
+  conn->socket_.async_connect(endpoint, [conn, promise](std::error_code error) {
+    if (error) {
+      promise.reject(std::move(error));
+    } else {
+      promise.resolve(conn);
+    }
+  });
   return promise;
 }
 
