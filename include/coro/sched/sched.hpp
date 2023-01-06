@@ -1,8 +1,3 @@
-/**
- * @file sched.hpp
- * @brief 与协程调度相关的部分函数。
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_SCHED_HPP_
 #define CORO_INCLUDE_CORO_SCHED_SCHED_HPP_
 

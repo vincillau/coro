@@ -1,8 +1,3 @@
-/**
- * @file promise.hpp
- * @brief coro::sched::Promise 的包装器。
- */
-
 #ifndef CORO_INCLUDE_CORO_PROMISE_HPP_
 #define CORO_INCLUDE_CORO_PROMISE_HPP_
 

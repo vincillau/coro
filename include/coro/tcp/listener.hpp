@@ -1,8 +1,3 @@
-/**
- * @file listener.hpp
- * @brief 表示 TCP 连接监听器的类。
- */
-
 #ifndef CORO_INCLUDE_CORO_TCP_LISTENER_HPP_
 #define CORO_INCLUDE_CORO_TCP_LISTENER_HPP_
 
@@ -17,6 +12,9 @@
 namespace coro {
 namespace tcp {
 
+/**
+ * @brief 表示 TCP 连接监听器的类。
+ */
 class Acceptor {
  public:
   Acceptor(boost::asio::ip::tcp::acceptor acceptor)

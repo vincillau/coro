@@ -1,8 +1,3 @@
-/**
- * @file stream.hpp
- * @brief 对流的抽象。
- */
-
 #ifndef CORO_INCLUDE_CORO_STREAM_HPP_
 #define CORO_INCLUDE_CORO_STREAM_HPP_
 

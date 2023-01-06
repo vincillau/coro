@@ -1,8 +1,3 @@
-/**
- * @file exception.hpp
- * @brief 表示各种错误的异常类。
- */
-
 #ifndef CORO_INCLUDE_CORO_EXCEPTION_HPP_
 #define CORO_INCLUDE_CORO_EXCEPTION_HPP_
 

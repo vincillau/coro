@@ -1,8 +1,3 @@
-/**
- * @file promise.hpp
- * @brief promise 实现。
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_PROMISE_HPP_
 #define CORO_INCLUDE_CORO_SCHED_PROMISE_HPP_
 

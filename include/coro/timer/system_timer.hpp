@@ -1,8 +1,3 @@
-/**
- * @file system_timer.hpp
- * @brief 基于系统时钟的定时器。
- */
-
 #ifndef CORO_INCLUDE_CORO_TIMER_SYSTEM_TIMER_HPP_
 #define CORO_INCLUDE_CORO_TIMER_SYSTEM_TIMER_HPP_
 
@@ -15,6 +10,9 @@
 namespace coro {
 namespace timer {
 
+/**
+ * @brief 基于系统时钟的定时器。
+ */
 class SystemTimer {
  public:
   SystemTimer() : system_timer_(sched::io_context()) {}

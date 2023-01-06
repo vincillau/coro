@@ -1,11 +1,7 @@
-/**
- * @file fctx.hpp
- * @brief Coro 使用 Boost Context 的 fcontext 实现上下文切换。
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_FCTX_HPP_
 #define CORO_INCLUDE_CORO_SCHED_FCTX_HPP_
 
+// Coro 使用 Boost Context 的 fcontext 实现上下文切换。
 // TODO(Vincil Lau): 暂时直接包含 Boost Context 的内部头文件。
 #include <boost/context/detail/fcontext.hpp>
 

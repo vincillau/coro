@@ -1,8 +1,3 @@
-/**
- * @file scheduler.hpp
- * @brief 协程调度器。
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_SCHEDULER_HPP_
 #define CORO_INCLUDE_CORO_SCHED_SCHEDULER_HPP_
 

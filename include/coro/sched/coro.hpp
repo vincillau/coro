@@ -1,8 +1,3 @@
-/**
- * @file coro.hpp
- * @brief 协程类
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_CORO_HPP_
 #define CORO_INCLUDE_CORO_SCHED_CORO_HPP_
 

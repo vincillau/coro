@@ -1,8 +1,3 @@
-/**
- * @file conn.hpp
- * @brief 表示 TCP 连接的类。
- */
-
 #ifndef CORO_INCLUDE_CORO_TCP_CONN_HPP_
 #define CORO_INCLUDE_CORO_TCP_CONN_HPP_
 
@@ -14,6 +9,9 @@
 namespace coro {
 namespace tcp {
 
+/**
+ * @brief 表示 TCP 连接的类。
+ */
 class Socket : public Stream {
  public:
   Socket(boost::asio::io_context& io_context) : socket_(io_context) {}

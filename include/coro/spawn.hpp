@@ -1,8 +1,3 @@
-/**
- * @file spawn.hpp
- * @brief spawn 函数的实现。
- */
-
 #ifndef CORO_INCLUDE_CORO_SPAWN_HPP_
 #define CORO_INCLUDE_CORO_SPAWN_HPP_
 

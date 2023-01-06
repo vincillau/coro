@@ -1,8 +1,3 @@
-/**
- * @file steady_timer.hpp
- * @brief 基于稳定时钟的定时器。
- */
-
 #ifndef CORO_INCLUDE_CORO_TIMER_STEADY_TIMER_HPP_
 #define CORO_INCLUDE_CORO_TIMER_STEADY_TIMER_HPP_
 
@@ -15,6 +10,9 @@
 namespace coro {
 namespace timer {
 
+/**
+ * @brief 基于稳定时钟的定时器。
+ */
 class SteadyTimer {
  public:
   SteadyTimer() : steady_timer_(sched::io_context()) {}

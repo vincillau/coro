@@ -1,8 +1,3 @@
-/**
- * @file stack.hpp
- * @brief 协程栈的分配和释放，仅支持 x64。
- */
-
 #ifndef CORO_INCLUDE_CORO_SCHED_STACK_HPP_
 #define CORO_INCLUDE_CORO_SCHED_STACK_HPP_
 
@@ -10,6 +5,8 @@
 
 namespace coro {
 namespace sched {
+
+// 协程栈的分配和释放，仅支持 x64。
 
 /**
  * @brief 分配指定大小的栈，返回指向栈底的指针。
