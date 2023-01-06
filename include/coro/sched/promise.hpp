@@ -33,11 +33,7 @@ class Promise {
   bool operator=(const Promise&) = delete;
   Promise(Promise&&) = delete;
   bool operator=(Promise&&) = delete;
-
-  /**
-   * @brief 销毁 Promise 对象，销毁前将调用 onDestory_ 回调。
-   */
-  ~Promise();
+  ~Promise() { assert(settled()); }
 
   /**
    * @brief 将 Promise 设置为已兑现，并将 value 设置为异步函数的执行结果。
@@ -114,16 +110,7 @@ class Promise {
   std::error_code error_;                         // 错误码。
   bool settled_ = false;                          // Promise 是否已敲定。
   std::vector<std::function<void()>> on_settle_;  // 敲定时执行的回调。
-  std::function<void()> on_destory_;              // 销毁时执行的回调。
 };
-
-template <typename T>
-inline Promise<T>::~Promise() {
-  assert(settled());
-  if (on_destory_) {
-    on_destory_();
-  }
-}
 
 template <typename T>
 inline void Promise<T>::resolve(T value) {
@@ -220,7 +207,7 @@ class Promise<void> {
   bool operator=(const Promise&) = delete;
   Promise(Promise&&) = delete;
   bool operator=(Promise&&) = delete;
-  ~Promise();
+  ~Promise() { assert(settled()); }
 
   void resolve();
   void reject(std::error_code error);
@@ -242,15 +229,7 @@ class Promise<void> {
   std::error_code error_;
   bool settled_ = false;
   std::vector<std::function<void()>> on_settle_;
-  std::function<void()> on_destory_;
 };
-
-inline Promise<void>::~Promise() {
-  assert(settled());
-  if (on_destory_) {
-    on_destory_();
-  }
-}
 
 inline void Promise<void>::resolve() {
   assert(!settled());

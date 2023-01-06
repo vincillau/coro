@@ -1,7 +1,5 @@
 #include "coro/timer/steady_timer.hpp"
 
-#include "coro/sched/sched.hpp"
-
 namespace coro {
 namespace timer {
 

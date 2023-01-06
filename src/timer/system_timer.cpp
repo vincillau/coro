@@ -1,7 +1,5 @@
 #include "coro/timer/system_timer.hpp"
 
-#include "coro/sched/sched.hpp"
-
 namespace coro {
 namespace timer {
 
@@ -25,7 +23,7 @@ Promise<void> SystemTimer::expiresAt(
 }
 
 Promise<void> SystemTimer::expiresAfter(
-    std::chrono::duration<int64_t> expiry_time) {
+    std::chrono::duration<int64_t, std::nano> expiry_time) {
   Promise<void> promise;
   system_timer_.expires_after(expiry_time);
   system_timer_.async_wait([promise](std::error_code error) {
