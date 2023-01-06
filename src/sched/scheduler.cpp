@@ -70,6 +70,7 @@ void Scheduler::exit() {
 void Scheduler::freeDead() { dead_.reset(); }
 
 void Scheduler::idleFunc() {
+  auto work_guard = boost::asio::make_work_guard(io_context_);
   for (;;) {
     assert(current_ == idle_);
     if (!ready_queue_.empty()) {

@@ -9,7 +9,7 @@ add_requires("gtest >= 1.12")
 
 target("coro")
     set_kind("static")
-    add_files("src/sched/*.cpp")
+    add_files("src/sched/*.cpp", "src/tcp/*.cpp", "src/stream.cpp")
     add_includedirs("include")
     add_packages("boost")
 

@@ -8,7 +8,7 @@ namespace tcp {
 
 Promise<Conn> Acceptor::accept() {
   Promise<Conn> promise;
-  auto conn = std::make_shared<Socket>(sched::Sched::io_context());
+  auto conn = std::make_shared<Socket>(sched::io_context());
   acceptor_.async_accept(conn->socket_, [conn, promise](std::error_code error) {
     if (error) {
       promise.reject(std::move(error));
@@ -23,7 +23,7 @@ Listener listen(const std::string& host, uint16_t port,
                 std::error_code* error) {
   boost::asio::ip::tcp ::endpoint endpoint(
       boost::asio::ip::address::from_string(host), port);
-  boost::asio::ip::tcp::acceptor acceptor(sched::Sched::io_context());
+  boost::asio::ip::tcp::acceptor acceptor(sched::io_context());
   boost::system::error_code err;
 
   acceptor.open(endpoint.protocol(), err);

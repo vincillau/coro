@@ -171,6 +171,12 @@ inline T Promise<T>::await(std::error_code& error) {
 
 template <typename T>
 inline void Promise<T>::then(std::function<void(T value)> callback) {
+  if (settled()) {
+    if (!err()) {
+      callback(std::move(value_));
+    }
+    return;
+  }
   appendOnSettle([this, callback]() {
     if (!err()) {
       callback(std::move(value_));
@@ -181,6 +187,12 @@ inline void Promise<T>::then(std::function<void(T value)> callback) {
 template <typename T>
 inline void Promise<T>::except(
     std::function<void(T value, std::error_code error)> callback) {
+  if (settled()) {
+    if (err()) {
+      callback(std::move(value_), std::move(error_));
+    }
+    return;
+  }
   appendOnSettle([this, callback]() {
     if (err()) {
       callback(std::move(value_), std::move(error_));
@@ -190,6 +202,10 @@ inline void Promise<T>::except(
 
 template <typename T>
 inline void Promise<T>::finally(std::function<void()> callback) {
+  if (settled()) {
+    callback();
+    return;
+  }
   appendOnSettle([this, callback]() { callback(); });
 }
 
@@ -265,6 +281,12 @@ inline void Promise<void>::await(std::error_code& error) {
 }
 
 inline void Promise<void>::then(std::function<void()> callback) {
+  if (settled()) {
+    if (!err()) {
+      callback();
+    }
+    return;
+  }
   appendOnSettle([this, callback]() {
     if (!err()) {
       callback();
@@ -274,6 +296,12 @@ inline void Promise<void>::then(std::function<void()> callback) {
 
 inline void Promise<void>::except(
     std::function<void(std::error_code error)> callback) {
+  if (settled()) {
+    if (err()) {
+      callback(std::move(error_));
+    }
+    return;
+  }
   appendOnSettle([this, callback]() {
     if (err()) {
       callback(std::move(error_));
@@ -282,6 +310,10 @@ inline void Promise<void>::except(
 }
 
 inline void Promise<void>::finally(std::function<void()> callback) {
+  if (settled()) {
+    callback();
+    return;
+  }
   appendOnSettle([this, callback]() { callback(); });
 }
 
