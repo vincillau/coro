@@ -8,6 +8,7 @@
 #include "promise.hpp"
 
 namespace coro {
+namespace impl {
 
 class Stream {
  public:
@@ -67,6 +68,10 @@ class Stream {
   // 尚未被 readFromBuf 读取的字节的偏移量。
   size_t read_buf_offset_ = 0;
 };
+
+}  // namespace impl
+
+using Stream = std::shared_ptr<impl::Stream>;
 
 }  // namespace coro
 

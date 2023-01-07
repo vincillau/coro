@@ -10,13 +10,11 @@ namespace coro {
 namespace http {
 namespace protocol {
 
-Promise<Request> readReq(std::shared_ptr<Stream> stream,
-                         size_t line_len_limit = 4096);
-Promise<void> writeReq(std::shared_ptr<Stream> stream, const Request& req);
+Promise<Request> readReq(Stream stream, size_t line_len_limit = 4096);
+Promise<void> writeReq(Stream stream, const Request& req);
 
-Promise<Response> readResp(std::shared_ptr<Stream> stream,
-                           size_t line_len_limit = 4096);
-Promise<void> writeResp(std::shared_ptr<Stream> stream, const Response& resp);
+Promise<Response> readResp(Stream stream, size_t line_len_limit = 4096);
+Promise<void> writeResp(Stream stream, const Response& resp);
 
 }  // namespace protocol
 }  // namespace http

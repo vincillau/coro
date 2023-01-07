@@ -3,6 +3,7 @@
 #include <cstring>
 
 namespace coro {
+namespace impl {
 
 Promise<size_t> Stream::readn(char* buf, size_t len) {
   Promise<size_t> promise;
@@ -97,4 +98,5 @@ size_t Stream::readFromBuf(char* buf, size_t len) {
   return len;
 }
 
+}  // namespace impl
 }  // namespace coro

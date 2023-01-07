@@ -14,7 +14,7 @@ namespace impl {
 /**
  * @brief 表示 TCP 连接的类。
  */
-class Conn : public Stream {
+class Conn : public coro::impl::Stream {
  public:
   explicit Conn(boost::asio::io_context& io_context) : socket_(io_context) {}
 

@@ -9,9 +9,8 @@ namespace protocol {
 
 using Headers = std::vector<std::pair<std::string, std::string>>;
 
-static Promise<void> readHeaders(std::shared_ptr<Stream> stream,
-                                 size_t line_len_limit, Headers* headers,
-                                 std::shared_ptr<char> buf) {
+static Promise<void> readHeaders(Stream stream, size_t line_len_limit,
+                                 Headers* headers, std::shared_ptr<char> buf) {
   Promise<void> promise;
 
   stream->readline(buf.get(), line_len_limit)
@@ -58,8 +57,7 @@ static Promise<void> readHeaders(std::shared_ptr<Stream> stream,
   return promise;
 }
 
-Promise<Request> readReq(std::shared_ptr<Stream> stream,
-                         size_t line_len_limit) {
+Promise<Request> readReq(Stream stream, size_t line_len_limit) {
   Promise<Request> promise;
   auto buf = std::shared_ptr<char>(new char[line_len_limit],
                                    [](char* ptr) { delete[] ptr; });
@@ -101,7 +99,7 @@ Promise<Request> readReq(std::shared_ptr<Stream> stream,
   return promise;
 }
 
-Promise<void> writeReq(std::shared_ptr<Stream> stream, const Request& req) {
+Promise<void> writeReq(Stream stream, const Request& req) {
   Promise<void> promise;
 
   auto bytes = std::make_shared<std::string>();
@@ -129,8 +127,7 @@ Promise<void> writeReq(std::shared_ptr<Stream> stream, const Request& req) {
   return promise;
 }
 
-Promise<Response> readResp(std::shared_ptr<Stream> stream,
-                           size_t line_len_limit) {
+Promise<Response> readResp(Stream stream, size_t line_len_limit) {
   Promise<Response> promise;
   auto buf = std::shared_ptr<char>(new char[line_len_limit],
                                    [](char* ptr) { delete[] ptr; });
@@ -172,7 +169,7 @@ Promise<Response> readResp(std::shared_ptr<Stream> stream,
   return promise;
 }
 
-Promise<void> writeResp(std::shared_ptr<Stream> stream, const Response& resp) {
+Promise<void> writeResp(Stream stream, const Response& resp) {
   Promise<void> promise;
 
   auto bytes = std::make_shared<std::string>();
