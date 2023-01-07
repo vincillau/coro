@@ -9,12 +9,14 @@
 namespace coro {
 namespace tcp {
 
+namespace impl {
+
 /**
  * @brief 表示 TCP 连接的类。
  */
-class Socket : public Stream {
+class Conn : public Stream {
  public:
-  explicit Socket(boost::asio::io_context& io_context) : socket_(io_context) {}
+  explicit Conn(boost::asio::io_context& io_context) : socket_(io_context) {}
 
   /**
    * @brief 读取最多 len 个字节。
@@ -32,19 +34,25 @@ class Socket : public Stream {
    */
   Promise<size_t> write(const char* buf, size_t len) override;
 
+  /**
+   * @brief 关闭连接。
+   */
   void close() override { socket_.close(); }
 
  private:
-  friend class Acceptor;
-  friend Promise<std::shared_ptr<Socket>> connect(const std::string& host,
-                                                  uint16_t port);
+  friend class Listener;
+  friend Promise<std::shared_ptr<Conn>> connect(const std::string& host,
+                                                uint16_t port);
 
   boost::asio::ip::tcp::socket socket_;
 };
 
-using Conn = std::shared_ptr<Socket>;
+Promise<std::shared_ptr<Conn>> connect(const std::string& host, uint16_t port);
 
-Promise<Conn> connect(const std::string& host, uint16_t port);
+}  // namespace impl
+
+using Conn = std::shared_ptr<impl::Conn>;
+using impl::connect;  // NOLINT
 
 }  // namespace tcp
 }  // namespace coro
