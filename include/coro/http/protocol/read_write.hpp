@@ -1,5 +1,5 @@
-#ifndef CORO_INCLUDE_CORO_HTTP_PROTO_READ_WRITE_HPP_
-#define CORO_INCLUDE_CORO_HTTP_PROTO_READ_WRITE_HPP_
+#ifndef CORO_INCLUDE_CORO_HTTP_PROTOCOL_READ_WRITE_HPP_
+#define CORO_INCLUDE_CORO_HTTP_PROTOCOL_READ_WRITE_HPP_
 
 #include "coro/promise.hpp"
 #include "coro/stream.hpp"
@@ -8,7 +8,7 @@
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 Promise<Request> readReq(std::shared_ptr<Stream> stream,
                          size_t line_len_limit = 4096);
@@ -18,8 +18,8 @@ Promise<Response> readResp(std::shared_ptr<Stream> stream,
                            size_t line_len_limit = 4096);
 Promise<void> writeResp(std::shared_ptr<Stream> stream, const Response& resp);
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro
 
-#endif  // CORO_INCLUDE_CORO_HTTP_PROTO_READ_WRITE_HPP_
+#endif  // CORO_INCLUDE_CORO_HTTP_PROTOCOL_READ_WRITE_HPP_

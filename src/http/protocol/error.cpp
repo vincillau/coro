@@ -1,8 +1,8 @@
-#include "coro/http/proto/error.hpp"
+#include "coro/http/protocol/error.hpp"
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 std::string ErrorCategory::message(int code) const {
   switch (code) {
@@ -24,6 +24,6 @@ const std::error_category& errorCategory() {
   return instance;
 }
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro

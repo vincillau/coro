@@ -1,11 +1,11 @@
-#include "coro/http/proto/read_write.hpp"
+#include "coro/http/protocol/read_write.hpp"
 
-#include "coro/http/proto/error.hpp"
-#include "coro/http/proto/parse.hpp"
+#include "coro/http/protocol/error.hpp"
+#include "coro/http/protocol/parse.hpp"
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 using Headers = std::vector<std::pair<std::string, std::string>>;
 
@@ -200,6 +200,6 @@ Promise<void> writeResp(std::shared_ptr<Stream> stream, const Response& resp) {
   return promise;
 }
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro

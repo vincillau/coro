@@ -1,11 +1,11 @@
-#include "coro/http/proto/parse.hpp"
+#include "coro/http/protocol/parse.hpp"
 
 #include <cctype>
 #include <cstring>
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 bool parseReqStartLine(const char* line, std::string& method, std::string& url,
                        std::string& version) {
@@ -155,6 +155,6 @@ bool parseHeader(const char* line, std::string& name, std::string& value) {
   return *cursor == '\n';
 }
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro

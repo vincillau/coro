@@ -1,12 +1,12 @@
-#ifndef CORO_INCLUDE_CORO_HTTP_PROTO_REQUEST_HPP_
-#define CORO_INCLUDE_CORO_HTTP_PROTO_REQUEST_HPP_
+#ifndef CORO_INCLUDE_CORO_HTTP_PROTOCOL_REQUEST_HPP_
+#define CORO_INCLUDE_CORO_HTTP_PROTOCOL_REQUEST_HPP_
 
 #include <string>
 #include <vector>
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 struct Request {
   std::string method;
@@ -15,8 +15,8 @@ struct Request {
   std::vector<std::pair<std::string, std::string>> headers;
 };
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro
 
-#endif  // CORO_INCLUDE_CORO_HTTP_PROTO_REQUEST_HPP_
+#endif  // CORO_INCLUDE_CORO_HTTP_PROTOCOL_REQUEST_HPP_

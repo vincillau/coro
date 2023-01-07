@@ -1,12 +1,12 @@
-#ifndef CORO_INCLUDE_CORO_HTTP_PROTO_ERROR_HPP_
-#define CORO_INCLUDE_CORO_HTTP_PROTO_ERROR_HPP_
+#ifndef CORO_INCLUDE_CORO_HTTP_PROTOCOL_ERROR_HPP_
+#define CORO_INCLUDE_CORO_HTTP_PROTOCOL_ERROR_HPP_
 
 #include <string>
 #include <system_error>
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 enum Errc {
   kEof,
@@ -26,8 +26,8 @@ class ErrorCategory : public std::error_category {
 
 const std::error_category& errorCategory();
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro
 
-#endif  // CORO_INCLUDE_CORO_HTTP_PROTO_ERROR_HPP_
+#endif  // CORO_INCLUDE_CORO_HTTP_PROTOCOL_ERROR_HPP_

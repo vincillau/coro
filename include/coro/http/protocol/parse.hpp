@@ -1,11 +1,11 @@
-#ifndef CORO_INCLUDE_CORO_HTTP_PROTO_PARSE_HPP_
-#define CORO_INCLUDE_CORO_HTTP_PROTO_PARSE_HPP_
+#ifndef CORO_INCLUDE_CORO_HTTP_PROTOCOL_PARSE_HPP_
+#define CORO_INCLUDE_CORO_HTTP_PROTOCOL_PARSE_HPP_
 
 #include <string>
 
 namespace coro {
 namespace http {
-namespace proto {
+namespace protocol {
 
 bool parseReqStartLine(const char* line, std::string& method, std::string& url,
                        std::string& version);
@@ -15,8 +15,8 @@ bool parseRespStartLine(const char* line, std::string& version, int& code,
 
 bool parseHeader(const char* line, std::string& name, std::string& value);
 
-}  // namespace proto
+}  // namespace protocol
 }  // namespace http
 }  // namespace coro
 
-#endif  // CORO_INCLUDE_CORO_HTTP_PROTO_PARSE_HPP_
+#endif  // CORO_INCLUDE_CORO_HTTP_PROTOCOL_PARSE_HPP_
