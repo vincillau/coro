@@ -13,7 +13,7 @@ namespace coro {
  */
 class Exception final {
  public:
-  Exception(std::error_code error) : error_(std::move(error)) {}
+  explicit Exception(std::error_code error) : error_(std::move(error)) {}
 
   const std::error_code& error() const noexcept { return error_; }
 

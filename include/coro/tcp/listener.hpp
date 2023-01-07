@@ -17,7 +17,7 @@ namespace tcp {
  */
 class Acceptor {
  public:
-  Acceptor(boost::asio::ip::tcp::acceptor acceptor)
+  explicit Acceptor(boost::asio::ip::tcp::acceptor acceptor)
       : acceptor_(std::move(acceptor)) {}
 
   /**

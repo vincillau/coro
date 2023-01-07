@@ -14,7 +14,7 @@ namespace tcp {
  */
 class Socket : public Stream {
  public:
-  Socket(boost::asio::io_context& io_context) : socket_(io_context) {}
+  explicit Socket(boost::asio::io_context& io_context) : socket_(io_context) {}
 
   /**
    * @brief 读取最多 len 个字节。
