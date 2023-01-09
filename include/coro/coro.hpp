@@ -4,6 +4,7 @@
 #include "exception.hpp"
 #include "http.hpp"
 #include "promise.hpp"
+#include "redis.hpp"
 #include "sched.hpp"
 #include "sleep.hpp"
 #include "spawn.hpp"
