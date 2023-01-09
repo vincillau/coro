@@ -84,16 +84,6 @@ void ArrayField::append(std::string& buf) const {
   }
 }
 
-std::shared_ptr<ArrayField> request(
-    std::initializer_list<std::string> iterable) {
-  auto array = std::make_shared<ArrayField>();
-  ArrayField::Fields& fields = array->mut_fields();
-  for (auto iter = iterable.begin(); iter != iterable.end(); iter++) {
-    fields.push_back(BulkStringField::from(std::move(*iter)));
-  }
-  return array;
-}
-
 }  // namespace protocol
 }  // namespace redis
 }  // namespace coro

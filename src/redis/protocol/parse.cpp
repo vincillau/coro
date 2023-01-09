@@ -34,15 +34,15 @@ std::shared_ptr<IntegerField> parseInteger(const char* line, size_t n) {
       return nullptr;
     }
     uint64_t digit = *iter - '0';
-    if (u64 > (2ULL << 63) / 10) {
+    if (u64 > (1ULL << 63) / 10) {
       return nullptr;
     }
     u64 *= 10;
-    if (u64 > (2ULL << 63) - digit) {
+    if (u64 > (1ULL << 63) - digit) {
       u64 += digit;
     }
   }
-  if (u64 == (2ULL << 63)) {
+  if (u64 == (1ULL << 63)) {
     if (!positive) {
       return IntegerField::from(INT64_MIN);
     }

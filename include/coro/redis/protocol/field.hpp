@@ -78,7 +78,7 @@ class IntegerField : public Field {
   IntegerField() = default;
   explicit IntegerField(int64_t value) : value_(value) {}
 
-  FieldType type() const override { return FieldType::kError; }
+  FieldType type() const override { return FieldType::kInteger; }
   size_t bytes() const override {
     // 1 字节类型，至多 20 字节数字，2 字节 \r\n。
     return 1 + 20 + 2;
@@ -103,7 +103,7 @@ class BulkStringField : public Field {
   BulkStringField() = default;
   explicit BulkStringField(std::string value) : value_(std::move(value)) {}
 
-  FieldType type() const override { return FieldType::kSimpleString; }
+  FieldType type() const override { return FieldType::kBulkString; }
   size_t bytes() const override;
 
   bool is_null() const { return !value_.has_value(); }
@@ -148,19 +148,6 @@ class ArrayField : public Field {
  private:
   boost::optional<Fields> fields_;
 };
-
-template <typename Iterable>
-std::shared_ptr<ArrayField> request(Iterable iterable) {
-  auto array = std::make_shared<ArrayField>();
-  ArrayField::Fields& fields = array->mut_fields();
-  for (auto iter = iterable.begin(); iter != iterable.end(); iter++) {
-    fields.push_back(BulkStringField::null(std::move(*iter)));
-  }
-  return array;
-}
-
-std::shared_ptr<ArrayField> request(
-    std::initializer_list<std::string> iterable);
 
 }  // namespace protocol
 }  // namespace redis
