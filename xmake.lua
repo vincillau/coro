@@ -13,4 +13,5 @@ target("coro")
     add_includedirs("include")
     add_packages("boost")
 
+includes("examples")
 includes("test")
